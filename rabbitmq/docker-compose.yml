@@ -3,6 +3,7 @@ version: '3'
 services:
   rabbitmq1:
     image: rabbitmq:3.7-management
+    container_name: rabbitmq1
     hostname: rabbitmq1
     environment:
       - RABBITMQ_ERLANG_COOKIE=abc1234
@@ -14,6 +15,7 @@ services:
 
   rabbitmq2:
     image: rabbitmq:3.7-management
+    container_name: rabbitmq2
     hostname: rabbitmq2
     depends_on:
       - rabbitmq1
@@ -25,6 +27,7 @@ services:
 
   rabbitmq3:
     image: rabbitmq:3.7-management
+    container_name: rabbitmq3
     hostname: rabbitmq3
     depends_on:
       - rabbitmq1

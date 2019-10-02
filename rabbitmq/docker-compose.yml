@@ -12,6 +12,7 @@ services:
       - RABBITMQ_DEFAULT_VHOST=/
     ports:
       - 15672:15672
+    restart: always
 
   rabbitmq2:
     image: rabbitmq:3.7-management
@@ -24,6 +25,7 @@ services:
     volumes:
       - ./cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: ["sh","/usr/local/bin/cluster-entrypoint.sh"]
+    restart: always
 
   rabbitmq3:
     image: rabbitmq:3.7-management
@@ -36,3 +38,4 @@ services:
     volumes:
       - ./cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: ["sh","/usr/local/bin/cluster-entrypoint.sh"]
+    restart: always

@@ -21,21 +21,29 @@ services:
       - 27017
     restart: always
     volumes:
+      - ./key:/opt
+      - ./conf/mongod.conf:/etc/mongod.conf.orig
       - ./script:/home
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]
   mongo2:
     hostname: mongo2
     container_name: localmongo2
     image: mongo:4.0-xenial
+    volumes:
+      - ./key:/opt
+      - ./conf/mongod.conf:/etc/mongod.conf.orig
     expose:
       - 27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]
   mongo3:
     hostname: mongo3
     container_name: localmongo3
     image: mongo:4.0-xenial
+    volumes:
+      - ./key:/opt
+      - ./conf/mongod.conf:/etc/mongod.conf.orig
     expose:
       - 27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]

@@ -28,3 +28,5 @@ mongo --host mongo1:27017 <<EOF
   rs.reconfig(cfg, { force: true });
   db.getMongo().setReadPref('nearest');
 EOF
+
+sleep 5

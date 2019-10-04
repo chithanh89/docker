@@ -1,0 +1,46 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:6.8.3
+    container_name: elasticsearch
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.ping.unicast.hosts="elasticsearch, elasticsearch2, elasticsearch3"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+  elasticsearch2:
+    image: elasticsearch:6.8.3
+    container_name: elasticsearch2
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.ping.unicast.hosts="elasticsearch, elasticsearch2, elasticsearch3"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  elasticsearch3:
+    image: elasticsearch:6.8.3
+    container_name: elasticsearch3
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.ping.unicast.hosts="elasticsearch, elasticsearch2, elasticsearch3"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1

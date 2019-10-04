@@ -6,6 +6,7 @@ mongo --host mongo1:27017 <<EOF
   var cfg = {
     "_id": "rs0",
     "version": 1,
+    "protocolVersion" : NumberLong(1),
     "members": [
       {
         "_id": 0,

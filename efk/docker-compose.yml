@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: httpd
+    image: ${NGINX_IMAGE}
     ports:
       - "80:80"
     links:
@@ -11,12 +11,18 @@ services:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: httpd.access
+        fluentd-async-connect: 'true'
+        fluentd-retry-wait: '1s'
+        fluentd-max-retries: '30'
+        tag: ${LOG_OPT_TAG_PREFIX}.efk.nginx
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    image: ${ELASTICSEARCH_IMAGE}
     environment:
+      - 'node.name=mynode'
       - "discovery.type=single-node"
+      - 'bootstrap.memory_lock=true'
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
     ports:
       - "9200:9200"
     restart: always
@@ -30,10 +36,15 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1G"
+        max-file: "2"
     restart: always
 
   kibana:
-    image: kibana:7.2.0
+    image: ${KIBANA_IMAGE}
     depends_on:
       - "elasticsearch"
     ports:

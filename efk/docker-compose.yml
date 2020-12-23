@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   fluent-bit:
-    image: fluent/fluent-bit:1.5
+    image: ${FLUENT_IMAGE}
     container_name: ${PREFIX}_fluent
     volumes:
       - ./fluent-bit/conf:/fluent-bit/etc

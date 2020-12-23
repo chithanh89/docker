@@ -1,52 +1,49 @@
 version: '3'
 services:
-  web:
-    image: ${NGINX_IMAGE}
-    ports:
-      - "80:80"
-    links:
-      - fluentd
-    restart: always
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: ${LOG_OPT_TAG_PREFIX}.efk.nginx
-
   elasticsearch:
     image: ${ELASTICSEARCH_IMAGE}
+    container_name: ${PREFIX}_es
     environment:
-      - 'node.name=mynode'
+      - 'node.name=${PREFIX}_es'
       - "discovery.type=single-node"
-      - 'bootstrap.memory_lock=true'
-      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+      - 'bootstrap.memory_lock=false'
+      - 'cluster.name=es-docker-cluster'
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
     ports:
       - "9200:9200"
-    restart: always
+    restart: unless-stopped
 
-  fluentd:
-    build: ./fluentd
+  fluent-bit:
+    image: ${FLUENT_IMAGE}
+    container_name: ${PREFIX}_fluent
     volumes:
-      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+      - ./fluent-bit/conf:/fluent-bit/etc
     depends_on:
       - "elasticsearch"
     ports:
       - "24224:24224"
-      - "24224:24224/udp"
+      - "5140:5140/udp"
+      - "2020:2020"
     logging:
-      driver: "json-file"
-      options:
-        max-size: "1G"
-        max-file: "2"
-    restart: always
+        driver: "json-file"
+        options:
+            max-size: "100m"
+            max-file: "5"
+    restart: unless-stopped
 
   kibana:
     image: ${KIBANA_IMAGE}
+    container_name: ${PREFIX}_kibana
     depends_on:
       - "elasticsearch"
     ports:
       - "5601:5601"
-    restart: always
+    environment:
+      ELASTICSEARCH_URL: http://${PREFIX}_es:9200
+      ELASTICSEARCH_HOST: http://${PREFIX}_es:9200
+    restart: unless-stopped
+
+networks:
+  default:
+    external:
+      name: ftd-mysql_ftd

@@ -8,9 +8,9 @@ services:
       - "discovery.type=single-node"
       - 'bootstrap.memory_lock=false'
       - 'cluster.name=es-docker-cluster'
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - 'ES_JAVA_OPTS=${ES_JAVA_OPTS}'
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
     restart: unless-stopped
 
   fluent-bit:
@@ -21,9 +21,9 @@ services:
     depends_on:
       - "elasticsearch"
     ports:
-      - "24224:24224"
-      - "5140:5140/udp"
-      - "2020:2020"
+      - "127.0.0.1:24224:24224"
+      - "127.0.0.1:5140:5140/udp"
+      - "127.0.0.1:2020:2020"
     logging:
         driver: "json-file"
         options:
@@ -37,7 +37,7 @@ services:
     depends_on:
       - "elasticsearch"
     ports:
-      - "5601:5601"
+      - "127.0.0.1:5601:5601"
     environment:
       ELASTICSEARCH_URL: http://${PREFIX}_es:9200
       ELASTICSEARCH_HOST: http://${PREFIX}_es:9200

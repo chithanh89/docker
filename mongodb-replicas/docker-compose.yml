@@ -1,49 +1,56 @@
 version: "3"
 services:
-  rockmongo:
-    image: weshigbee/rockmongo
-    container_name: rockmongodb
+  mongo-express:
+    image: mongo-express:0.54
+    container_name: mongo-express
     ports:
-      - 8080:80
+      - 8081:8081
     links:
       - mongo1
       - mongo2
       - mongo3
     environment:
-      - ROCKMONGO_AUTH=true
-      - MONGO_SERVER=mongo1
-    restart: always
+      - ME_CONFIG_MONGODB_SERVER=mongo1
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+#      - ME_CONFIG_MONGODB_ADMINUSERNAME=''   # Config Admin User
+#      - ME_CONFIG_MONGODB_ADMINPASSWORD=''   # Config Admin Pass
+    restart: unless-stopped
   mongo1:
     hostname: mongo1
     container_name: localmongo1
     image: mongo:4.0-xenial
     expose:
       - 27017
-    restart: always
+    restart: unless-stopped
     volumes:
-      - ./key:/opt
+      - ./key/keyfile:/opt/keyfile:ro
       - ./conf/mongod.conf:/etc/mongod.conf.orig
       - ./script:/home
+      - ./data/m1:/data/db
     entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]
   mongo2:
     hostname: mongo2
     container_name: localmongo2
     image: mongo:4.0-xenial
     volumes:
-      - ./key:/opt
+      - ./key/keyfile:/opt/keyfile:ro
       - ./conf/mongod.conf:/etc/mongod.conf.orig
+      - ./data/m2:/data/db
     expose:
       - 27017
-    restart: always
+    restart: unless-stopped
     entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]
   mongo3:
     hostname: mongo3
     container_name: localmongo3
     image: mongo:4.0-xenial
     volumes:
-      - ./key:/opt
+      - ./key/keyfile:/opt/keyfile:ro
       - ./conf/mongod.conf:/etc/mongod.conf.orig
+      - ./data/m3:/data/db
     expose:
       - 27017
-    restart: always
+    restart: unless-stopped
     entrypoint: [ "mongod", "--config", "/etc/mongod.conf.orig" ]

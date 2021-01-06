@@ -28,29 +28,29 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ADMIN_PASS}
     volumes:
-      - ./key/keyfile:/opt/keyfile:ro
-      - ./script:/home
+      - ./key/keyfile:${KEY_PATH}/keyfile
+      - ./script:${SCRIPT_PATH}
       - ./data/m1:/data/db
-    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "/opt/keyfile", "--journal", "--smallfiles" ]
+    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "${KEY_PATH}/keyfile", "--journal", "--smallfiles" ]
   mongo2:
     hostname: mongo2
     container_name: localmongo2
     image: mongo:4.0-xenial
     volumes:
-      - ./key/keyfile:/opt/keyfile:ro
+      - ./key/keyfile:${KEY_PATH}/keyfile
       - ./data/m2:/data/db
     expose:
       - 27017
     restart: unless-stopped
-    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "/opt/keyfile", "--journal", "--smallfiles" ]
+    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "${KEY_PATH}/keyfile", "--journal", "--smallfiles" ]
   mongo3:
     hostname: mongo3
     container_name: localmongo3
     image: mongo:4.0-xenial
     volumes:
-      - ./key/keyfile:/opt/keyfile:ro
+      - ./key/keyfile:${KEY_PATH}/keyfile
       - ./data/m3:/data/db
     expose:
       - 27017
     restart: unless-stopped
-    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "/opt/keyfile", "--journal", "--smallfiles" ]
+    command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "${KEY_PATH}/keyfile", "--journal", "--smallfiles" ]

@@ -30,6 +30,11 @@ services:
       - ./script:${SCRIPT_PATH}
       - ./data/m1:/data/db
     command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "${KEY_PATH}/keyfile", "--journal", "--smallfiles" ]
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo 127.0.0.1:27017 --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
   mongo2:
     hostname: mongo2
     container_name: localmongo2
@@ -41,6 +46,11 @@ services:
       - 27017
     restart: unless-stopped
     command: [ "--bind_ip_all", "--replSet", "rs0", "--keyFile", "${KEY_PATH}/keyfile", "--journal", "--smallfiles" ]
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo 127.0.0.1:27017 --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
   mongo3:
     hostname: mongo3
     container_name: localmongo3
